@@ -1,0 +1,108 @@
+# TestRail Tools Test Scripts
+
+This folder contains test scripts to verify connectivity and test all TestRail language model tools.
+
+## Setup
+
+1. Copy `.env.example` to `.env` in the project root:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` and add your TestRail credentials:
+   ```env
+   TESTRAIL_BASE_URL=https://yourcompany.testrail.io
+   TESTRAIL_EMAIL=your-email@example.com
+   TESTRAIL_API_KEY=your-api-key
+   ```
+
+3. To get your TestRail API key:
+   - Log in to your TestRail instance
+   - Click on your avatar in the top-right corner
+   - Select "My Settings"
+   - In the "API Keys" section, generate a new API key
+
+## Running Tests
+
+### Verify Connectivity
+
+Test your connection to TestRail:
+
+```bash
+npm run verify
+```
+
+This will:
+- Verify your configuration is loaded correctly
+- Test connection to TestRail
+- Display your user information
+- List accessible projects
+
+### Test All Tools
+
+Run comprehensive tests for all TestRail language model tools:
+
+```bash
+npm test
+```
+
+Or with a specific project ID:
+
+```bash
+npm test -- 1
+```
+
+This will test all non-destructive read operations:
+- ✓ Projects (get, list)
+- ✓ Suites (get, list)
+- ✓ Sections (get, list)
+- ✓ Test Cases (get, list)
+- ✓ User Groups (get, list)
+- ✓ Users (get, list, get by email)
+- ✓ Priorities (list)
+
+**Note:** Write operations (create, update, delete) are NOT tested to avoid modifying your TestRail data.
+
+## Scripts
+
+- `verifyConnectivity.ts` - Tests connection to TestRail
+- `testTestrailTools.ts` - Comprehensive test of all read-only tools
+
+## Troubleshooting
+
+### Connection Errors
+
+**401 Unauthorized:**
+- Check your email and API key are correct
+- Verify your API key hasn't expired
+
+**404 Not Found:**
+- Check your TestRail base URL is correct
+- Ensure you include the full URL (e.g., `https://yourcompany.testrail.io`)
+
+**ENOTFOUND:**
+- Check your network connection
+- Verify the TestRail URL is accessible from your network
+
+### Configuration Not Found
+
+If you see "TestRail configuration not found":
+1. Ensure `.env` file exists in the project root
+2. Verify environment variables are set correctly
+3. Alternatively, configure via VS Code settings:
+   - Open Settings (Ctrl+, or Cmd+,)
+   - Search for "TestRail Tools"
+   - Set Base URL, Email, and API Key
+
+## Using with VS Code Settings
+
+Instead of `.env`, you can configure via VS Code settings:
+
+1. Open VS Code Settings (Ctrl+, or Cmd+,)
+2. Search for "TestRail Tools"
+3. Configure:
+   - TestRail Base URL
+   - TestRail Email
+   - TestRail API Key
+
+The extension will use VS Code settings first, then fall back to environment variables.

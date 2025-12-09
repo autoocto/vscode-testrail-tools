@@ -1,0 +1,925 @@
+{
+  "name": "testrail-tools",
+  "displayName": "TestRail Tools",
+  "description": "Interact with TestRail test cases, suites, and projects in Copilot chat",
+  "version": "0.1.0",
+  "publisher": "autoocto",
+  "repository": "https://github.com/autoocto/vscode-testrail-tools",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Chat",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguageModelTool:getTestRailProject",
+    "onLanguageModelTool:getTestRailProjects",
+    "onLanguageModelTool:addTestRailProject",
+    "onLanguageModelTool:updateTestRailProject",
+    "onLanguageModelTool:deleteTestRailProject",
+    "onLanguageModelTool:getTestRailSuite",
+    "onLanguageModelTool:getTestRailSuites",
+    "onLanguageModelTool:addTestRailSuite",
+    "onLanguageModelTool:updateTestRailSuite",
+    "onLanguageModelTool:deleteTestRailSuite",
+    "onLanguageModelTool:getTestRailSection",
+    "onLanguageModelTool:getTestRailSections",
+    "onLanguageModelTool:addTestRailSection",
+    "onLanguageModelTool:updateTestRailSection",
+    "onLanguageModelTool:deleteTestRailSection",
+    "onLanguageModelTool:getTestRailCase",
+    "onLanguageModelTool:getTestRailCases",
+    "onLanguageModelTool:addTestRailCase",
+    "onLanguageModelTool:updateTestRailCase",
+    "onLanguageModelTool:deleteTestRailCase",
+    "onLanguageModelTool:getTestRailGroup",
+    "onLanguageModelTool:getTestRailGroups",
+    "onLanguageModelTool:addTestRailGroup",
+    "onLanguageModelTool:updateTestRailGroup",
+    "onLanguageModelTool:deleteTestRailGroup",
+    "onLanguageModelTool:getTestRailUser",
+    "onLanguageModelTool:getTestRailUserByEmail",
+    "onLanguageModelTool:getTestRailUsers",
+    "onLanguageModelTool:getTestRailPriorities"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "TestRail Tools",
+      "properties": {
+        "testrailTools.testrailBaseUrl": {
+          "type": "string",
+          "description": "TestRail base URL (e.g., https://yourcompany.testrail.io)",
+          "default": "",
+          "order": 1
+        },
+        "testrailTools.testrailEmail": {
+          "type": "string",
+          "description": "TestRail email address",
+          "default": "",
+          "order": 2
+        },
+        "testrailTools.testrailApiKey": {
+          "type": "string",
+          "description": "TestRail API key",
+          "default": "",
+          "order": 3
+        }
+      }
+    },
+    "languageModelTools": [
+      {
+        "name": "getTestRailProject",
+        "displayName": "Get TestRail Project",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailProject",
+        "modelDescription": "Get details for a specific TestRail project by ID.",
+        "icon": "$(project)",
+        "tags": [
+          "testrail",
+          "project"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            }
+          },
+          "required": [
+            "projectId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailProjects",
+        "displayName": "Get TestRail Projects",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailProjects",
+        "modelDescription": "Get list of all accessible TestRail projects.",
+        "icon": "$(project)",
+        "tags": [
+          "testrail",
+          "projects"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "isCompleted": {
+              "type": "number",
+              "description": "Filter by completed status: 1 for completed, 0 for active"
+            }
+          }
+        }
+      },
+      {
+        "name": "addTestRailProject",
+        "displayName": "Add TestRail Project",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "addTestRailProject",
+        "modelDescription": "Create a new TestRail project.",
+        "icon": "$(add)",
+        "tags": [
+          "testrail",
+          "project",
+          "create"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Project name"
+            },
+            "announcement": {
+              "type": "string",
+              "description": "Project announcement"
+            },
+            "showAnnouncement": {
+              "type": "boolean",
+              "description": "Show announcement"
+            },
+            "suiteMode": {
+              "type": "number",
+              "description": "Suite mode: 1 (single), 2 (single with baselines), 3 (multiple)"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "name": "updateTestRailProject",
+        "displayName": "Update TestRail Project",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "updateTestRailProject",
+        "modelDescription": "Update an existing TestRail project.",
+        "icon": "$(edit)",
+        "tags": [
+          "testrail",
+          "project",
+          "update"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Project name"
+            },
+            "announcement": {
+              "type": "string",
+              "description": "Project announcement"
+            },
+            "showAnnouncement": {
+              "type": "boolean",
+              "description": "Show announcement"
+            },
+            "isCompleted": {
+              "type": "boolean",
+              "description": "Mark project as completed"
+            }
+          },
+          "required": [
+            "projectId"
+          ]
+        }
+      },
+      {
+        "name": "deleteTestRailProject",
+        "displayName": "Delete TestRail Project",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "deleteTestRailProject",
+        "modelDescription": "Delete a TestRail project.",
+        "icon": "$(trash)",
+        "tags": [
+          "testrail",
+          "project",
+          "delete"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            }
+          },
+          "required": [
+            "projectId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailSuite",
+        "displayName": "Get TestRail Suite",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailSuite",
+        "modelDescription": "Get details for a specific TestRail test suite by ID.",
+        "icon": "$(folder)",
+        "tags": [
+          "testrail",
+          "suite"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "suiteId": {
+              "type": "number",
+              "description": "The TestRail suite ID"
+            }
+          },
+          "required": [
+            "suiteId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailSuites",
+        "displayName": "Get TestRail Suites",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailSuites",
+        "modelDescription": "Get list of test suites for a project.",
+        "icon": "$(folder)",
+        "tags": [
+          "testrail",
+          "suites"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            }
+          },
+          "required": [
+            "projectId"
+          ]
+        }
+      },
+      {
+        "name": "addTestRailSuite",
+        "displayName": "Add TestRail Suite",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "addTestRailSuite",
+        "modelDescription": "Create a new test suite in a project.",
+        "icon": "$(add)",
+        "tags": [
+          "testrail",
+          "suite",
+          "create"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Suite name"
+            },
+            "description": {
+              "type": "string",
+              "description": "Suite description"
+            }
+          },
+          "required": [
+            "projectId",
+            "name"
+          ]
+        }
+      },
+      {
+        "name": "updateTestRailSuite",
+        "displayName": "Update TestRail Suite",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "updateTestRailSuite",
+        "modelDescription": "Update an existing test suite.",
+        "icon": "$(edit)",
+        "tags": [
+          "testrail",
+          "suite",
+          "update"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "suiteId": {
+              "type": "number",
+              "description": "The TestRail suite ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Suite name"
+            },
+            "description": {
+              "type": "string",
+              "description": "Suite description"
+            }
+          },
+          "required": [
+            "suiteId"
+          ]
+        }
+      },
+      {
+        "name": "deleteTestRailSuite",
+        "displayName": "Delete TestRail Suite",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "deleteTestRailSuite",
+        "modelDescription": "Delete a test suite.",
+        "icon": "$(trash)",
+        "tags": [
+          "testrail",
+          "suite",
+          "delete"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "suiteId": {
+              "type": "number",
+              "description": "The TestRail suite ID"
+            }
+          },
+          "required": [
+            "suiteId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailSection",
+        "displayName": "Get TestRail Section",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailSection",
+        "modelDescription": "Get details for a specific section by ID.",
+        "icon": "$(symbol-folder)",
+        "tags": [
+          "testrail",
+          "section"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "sectionId": {
+              "type": "number",
+              "description": "The TestRail section ID"
+            }
+          },
+          "required": [
+            "sectionId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailSections",
+        "displayName": "Get TestRail Sections",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailSections",
+        "modelDescription": "Get list of sections for a project/suite.",
+        "icon": "$(symbol-folder)",
+        "tags": [
+          "testrail",
+          "sections"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            },
+            "suiteId": {
+              "type": "number",
+              "description": "The TestRail suite ID (required for multi-suite projects)"
+            }
+          },
+          "required": [
+            "projectId"
+          ]
+        }
+      },
+      {
+        "name": "addTestRailSection",
+        "displayName": "Add TestRail Section",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "addTestRailSection",
+        "modelDescription": "Create a new section in a project/suite.",
+        "icon": "$(add)",
+        "tags": [
+          "testrail",
+          "section",
+          "create"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Section name"
+            },
+            "description": {
+              "type": "string",
+              "description": "Section description"
+            },
+            "suiteId": {
+              "type": "number",
+              "description": "The TestRail suite ID (required for multi-suite projects)"
+            },
+            "parentId": {
+              "type": "number",
+              "description": "Parent section ID for nested sections"
+            }
+          },
+          "required": [
+            "projectId",
+            "name"
+          ]
+        }
+      },
+      {
+        "name": "updateTestRailSection",
+        "displayName": "Update TestRail Section",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "updateTestRailSection",
+        "modelDescription": "Update an existing section.",
+        "icon": "$(edit)",
+        "tags": [
+          "testrail",
+          "section",
+          "update"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "sectionId": {
+              "type": "number",
+              "description": "The TestRail section ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Section name"
+            },
+            "description": {
+              "type": "string",
+              "description": "Section description"
+            }
+          },
+          "required": [
+            "sectionId"
+          ]
+        }
+      },
+      {
+        "name": "deleteTestRailSection",
+        "displayName": "Delete TestRail Section",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "deleteTestRailSection",
+        "modelDescription": "Delete a section.",
+        "icon": "$(trash)",
+        "tags": [
+          "testrail",
+          "section",
+          "delete"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "sectionId": {
+              "type": "number",
+              "description": "The TestRail section ID"
+            }
+          },
+          "required": [
+            "sectionId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailCase",
+        "displayName": "Get TestRail Case",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailCase",
+        "modelDescription": "Get details for a specific test case by ID.",
+        "icon": "$(beaker)",
+        "tags": [
+          "testrail",
+          "case",
+          "test"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "caseId": {
+              "type": "number",
+              "description": "The TestRail case ID"
+            }
+          },
+          "required": [
+            "caseId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailCases",
+        "displayName": "Get TestRail Cases",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailCases",
+        "modelDescription": "Get list of test cases for a project/suite.",
+        "icon": "$(beaker)",
+        "tags": [
+          "testrail",
+          "cases",
+          "tests"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "The TestRail project ID"
+            },
+            "suiteId": {
+              "type": "number",
+              "description": "The TestRail suite ID (required for multi-suite projects)"
+            },
+            "sectionId": {
+              "type": "number",
+              "description": "Filter by section ID"
+            },
+            "limit": {
+              "type": "number",
+              "description": "Maximum number of cases to return (default: 250)"
+            },
+            "offset": {
+              "type": "number",
+              "description": "Offset for pagination"
+            }
+          },
+          "required": [
+            "projectId"
+          ]
+        }
+      },
+      {
+        "name": "addTestRailCase",
+        "displayName": "Add TestRail Case",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "addTestRailCase",
+        "modelDescription": "Create a new test case in a section.",
+        "icon": "$(add)",
+        "tags": [
+          "testrail",
+          "case",
+          "test",
+          "create"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "sectionId": {
+              "type": "number",
+              "description": "The TestRail section ID"
+            },
+            "title": {
+              "type": "string",
+              "description": "Test case title"
+            },
+            "priorityId": {
+              "type": "number",
+              "description": "Priority ID"
+            },
+            "estimate": {
+              "type": "string",
+              "description": "Time estimate"
+            },
+            "refs": {
+              "type": "string",
+              "description": "References/requirements"
+            },
+            "customFields": {
+              "type": "object",
+              "description": "Custom field values (e.g., custom_steps, custom_expected)"
+            }
+          },
+          "required": [
+            "sectionId",
+            "title"
+          ]
+        }
+      },
+      {
+        "name": "updateTestRailCase",
+        "displayName": "Update TestRail Case",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "updateTestRailCase",
+        "modelDescription": "Update an existing test case.",
+        "icon": "$(edit)",
+        "tags": [
+          "testrail",
+          "case",
+          "test",
+          "update"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "caseId": {
+              "type": "number",
+              "description": "The TestRail case ID"
+            },
+            "title": {
+              "type": "string",
+              "description": "Test case title"
+            },
+            "priorityId": {
+              "type": "number",
+              "description": "Priority ID"
+            },
+            "estimate": {
+              "type": "string",
+              "description": "Time estimate"
+            },
+            "refs": {
+              "type": "string",
+              "description": "References/requirements"
+            },
+            "customFields": {
+              "type": "object",
+              "description": "Custom field values (e.g., custom_steps, custom_expected)"
+            }
+          },
+          "required": [
+            "caseId"
+          ]
+        }
+      },
+      {
+        "name": "deleteTestRailCase",
+        "displayName": "Delete TestRail Case",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "deleteTestRailCase",
+        "modelDescription": "Delete a test case.",
+        "icon": "$(trash)",
+        "tags": [
+          "testrail",
+          "case",
+          "test",
+          "delete"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "caseId": {
+              "type": "number",
+              "description": "The TestRail case ID"
+            }
+          },
+          "required": [
+            "caseId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailGroup",
+        "displayName": "Get TestRail Group",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailGroup",
+        "modelDescription": "Get details for a specific user group by ID.",
+        "icon": "$(organization)",
+        "tags": [
+          "testrail",
+          "group"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "number",
+              "description": "The TestRail group ID"
+            }
+          },
+          "required": [
+            "groupId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailGroups",
+        "displayName": "Get TestRail Groups",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailGroups",
+        "modelDescription": "Get list of all user groups.",
+        "icon": "$(organization)",
+        "tags": [
+          "testrail",
+          "groups"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "addTestRailGroup",
+        "displayName": "Add TestRail Group",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "addTestRailGroup",
+        "modelDescription": "Create a new user group.",
+        "icon": "$(add)",
+        "tags": [
+          "testrail",
+          "group",
+          "create"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Group name"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "name": "updateTestRailGroup",
+        "displayName": "Update TestRail Group",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "updateTestRailGroup",
+        "modelDescription": "Update an existing user group.",
+        "icon": "$(edit)",
+        "tags": [
+          "testrail",
+          "group",
+          "update"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "number",
+              "description": "The TestRail group ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Group name"
+            }
+          },
+          "required": [
+            "groupId"
+          ]
+        }
+      },
+      {
+        "name": "deleteTestRailGroup",
+        "displayName": "Delete TestRail Group",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "deleteTestRailGroup",
+        "modelDescription": "Delete a user group.",
+        "icon": "$(trash)",
+        "tags": [
+          "testrail",
+          "group",
+          "delete"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "number",
+              "description": "The TestRail group ID"
+            }
+          },
+          "required": [
+            "groupId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailUser",
+        "displayName": "Get TestRail User",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailUser",
+        "modelDescription": "Get details for a specific user by ID.",
+        "icon": "$(account)",
+        "tags": [
+          "testrail",
+          "user"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "number",
+              "description": "The TestRail user ID"
+            }
+          },
+          "required": [
+            "userId"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailUserByEmail",
+        "displayName": "Get TestRail User By Email",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailUserByEmail",
+        "modelDescription": "Get user details by email address.",
+        "icon": "$(account)",
+        "tags": [
+          "testrail",
+          "user"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User email address"
+            }
+          },
+          "required": [
+            "email"
+          ]
+        }
+      },
+      {
+        "name": "getTestRailUsers",
+        "displayName": "Get TestRail Users",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailUsers",
+        "modelDescription": "Get list of all users.",
+        "icon": "$(account)",
+        "tags": [
+          "testrail",
+          "users"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "number",
+              "description": "Filter users by project ID"
+            }
+          }
+        }
+      },
+      {
+        "name": "getTestRailPriorities",
+        "displayName": "Get TestRail Priorities",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getTestRailPriorities",
+        "modelDescription": "Get list of available priorities.",
+        "icon": "$(list-ordered)",
+        "tags": [
+          "testrail",
+          "priorities"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node scripts/build.js",
+    "watch": "tsc -watch -p ./",
+    "pack": "vsce package",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "test": "npm run compile && npx ts-node src/scripts/testTestrailTools.ts",
+    "verify": "npm run compile && npx ts-node src/scripts/verifyConnectivity.ts"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.3",
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^7.x",
+    "@typescript-eslint/parser": "^7.x",
+    "dotenv": "^17.2.3",
+    "esbuild": "^0.19.0",
+    "eslint": "^8.x",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}

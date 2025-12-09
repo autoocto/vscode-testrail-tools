@@ -1,0 +1,7 @@
+node_modules/
+out/
+.vscode-test/
+*.vsix
+.env
+package-lock.json
+private_test/
