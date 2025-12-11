@@ -39,14 +39,13 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
     });
 
     const getProjectsTool = vscode.lm.registerTool('getTestRailProjects', {
-        async invoke(options: vscode.LanguageModelToolInvocationOptions<{ isCompleted?: number }>, _token: vscode.CancellationToken) {
+        async invoke(options: vscode.LanguageModelToolInvocationOptions<{ isCompleted?: number; limit?: number; offset?: number }>, _token: vscode.CancellationToken) {
             if (!helper) {
                 return handleToolError(new Error('TestRail is not configured'));
             }
-
-            const { isCompleted } = options.input;
+            const { isCompleted, limit, offset } = options.input;
             try {
-                const projectsResp = await helper.getProjects(isCompleted);
+                const projectsResp = await helper.getProjects(isCompleted, limit, offset);
                 const projects = projectsResp.projects || [];
                 const summary = formatProjectsSummary(projects);
                 return createSuccessResult({ projects, count: projects.length, summary });
@@ -147,14 +146,13 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
     });
 
     const getSuitesTool = vscode.lm.registerTool('getTestRailSuites', {
-        async invoke(options: vscode.LanguageModelToolInvocationOptions<{ projectId: number }>, _token: vscode.CancellationToken) {
+        async invoke(options: vscode.LanguageModelToolInvocationOptions<{ projectId: number; limit?: number; offset?: number }>, _token: vscode.CancellationToken) {
             if (!helper) {
                 return handleToolError(new Error('TestRail is not configured'));
             }
-
-            const { projectId } = options.input;
+            const { projectId, limit, offset } = options.input;
             try {
-                const suitesResp = await helper.getSuites(projectId);
+                const suitesResp = await helper.getSuites(projectId, limit, offset);
                 const suites = suitesResp.suites || [];
                 const summary = formatSuitesSummary(suites);
                 return createSuccessResult({ suites, count: suites.length, summary });
@@ -251,14 +249,15 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
         async invoke(options: vscode.LanguageModelToolInvocationOptions<{
             projectId: number;
             suiteId?: number;
+            limit?: number;
+            offset?: number;
         }>, _token: vscode.CancellationToken) {
             if (!helper) {
                 return handleToolError(new Error('TestRail is not configured'));
             }
-
-            const { projectId, suiteId } = options.input;
+            const { projectId, suiteId, limit, offset } = options.input;
             try {
-                const sectionsResp = await helper.getSections(projectId, suiteId);
+                const sectionsResp = await helper.getSections(projectId, suiteId, limit, offset);
                 const sections = sectionsResp.sections || [];
                 const summary = formatSectionsSummary(sections);
                 return createSuccessResult({ sections, count: sections.length, summary });
@@ -484,13 +483,14 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
     });
 
     const getGroupsTool = vscode.lm.registerTool('getTestRailGroups', {
-        async invoke(options: vscode.LanguageModelToolInvocationOptions<Record<string, never>>, _token: vscode.CancellationToken) {
+        async invoke(options: vscode.LanguageModelToolInvocationOptions<{ limit?: number; offset?: number }>, _token: vscode.CancellationToken) {
             if (!helper) {
                 return handleToolError(new Error('TestRail is not configured'));
             }
 
             try {
-                const groupsResp = await helper.getGroups();
+                const { limit, offset } = options.input as { limit?: number; offset?: number };
+                const groupsResp = await helper.getGroups(limit, offset);
                 const groups = groupsResp.groups || [];
                 const summary = formatGroupsSummary(groups);
                 return createSuccessResult({ groups, count: groups.length, summary });

@@ -2,7 +2,7 @@
   "name": "testrail-tools",
   "displayName": "TestRail Tools",
   "description": "Interact with TestRail test cases, suites, and projects in Copilot chat",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "autoocto",
   "repository": "https://github.com/autoocto/vscode-testrail-tools",
   "engines": {
