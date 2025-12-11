@@ -2,7 +2,7 @@
   "name": "testrail-tools",
   "displayName": "TestRail Tools",
   "description": "Interact with TestRail test cases, suites, and projects in Copilot chat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "autoocto",
   "repository": "https://github.com/autoocto/vscode-testrail-tools",
   "engines": {
@@ -110,6 +110,14 @@
             "isCompleted": {
               "type": "number",
               "description": "Filter by completed status: 1 for completed, 0 for active"
+            },
+            "limit": {
+              "type": "number",
+              "description": "Maximum number of projects to return (default: 250)"
+            },
+            "offset": {
+              "type": "number",
+              "description": "Number of projects to skip for pagination"
             }
           }
         }
@@ -258,6 +266,14 @@
             "projectId": {
               "type": "number",
               "description": "The TestRail project ID"
+            },
+            "limit": {
+              "type": "number",
+              "description": "Maximum number of suites to return (default: 250)"
+            },
+            "offset": {
+              "type": "number",
+              "description": "Number of suites to skip for pagination"
             }
           },
           "required": [
@@ -402,6 +418,14 @@
             "suiteId": {
               "type": "number",
               "description": "The TestRail suite ID (required for multi-suite projects)"
+            },
+            "limit": {
+              "type": "number",
+              "description": "Maximum number of sections to return (default: 250)"
+            },
+            "offset": {
+              "type": "number",
+              "description": "Number of sections to skip for pagination"
             }
           },
           "required": [
@@ -731,7 +755,16 @@
         ],
         "inputSchema": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "limit": {
+              "type": "number",
+              "description": "Maximum number of groups to return (default: 250)"
+            },
+            "offset": {
+              "type": "number",
+              "description": "Number of groups to skip for pagination"
+            }
+          }
         }
       },
       {
@@ -908,6 +941,7 @@
     "pretest": "npm run compile",
     "lint": "eslint src --ext ts",
     "test": "npm run compile && npx ts-node src/scripts/testTestrailTools.ts",
+    "test-pagination": "npm run compile && npx ts-node src/scripts/testPagination.ts",
     "verify": "npm run compile && npx ts-node src/scripts/verifyConnectivity.ts"
   },
   "devDependencies": {

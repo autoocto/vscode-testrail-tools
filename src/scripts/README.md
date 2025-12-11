@@ -46,6 +46,20 @@ Run comprehensive tests for all TestRail language model tools:
 npm test
 ```
 
+### Test Pagination
+
+Test pagination support with `_links.next` and `_links.prev`:
+
+```bash
+npm run test-pagination
+```
+
+This will:
+- Test pagination for Projects, Suites, Sections, Cases, and Groups APIs
+- Verify that `offset`, `limit`, and `size` fields are correctly returned
+- Test fetching next pages using `_links.next`
+- Test fetching previous pages using `_links.prev` when available
+
 Or with a specific project ID:
 
 ```bash

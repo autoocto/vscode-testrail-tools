@@ -35,7 +35,8 @@ async function main() {
 
         // Test 1: Get All Projects
         console.log('1️⃣  getTestRailProjects - Get all projects');
-        const allProjects = await testrail.getProjects();
+        const allProjectsResp = await testrail.getProjects();
+        const allProjects = allProjectsResp.projects || [];
         console.log(`✅ Found ${allProjects.length} projects`);
         if (allProjects.length > 0) {
             allProjects.slice(0, 3).forEach((p: any) => {
@@ -46,7 +47,8 @@ async function main() {
 
         // Test 2: Get Active Projects
         console.log('2️⃣  getTestRailProjects - Get active projects only');
-        const activeProjects = await testrail.getProjects(0);
+        const activeProjectsResp = await testrail.getProjects(0);
+        const activeProjects = activeProjectsResp.projects || [];
         console.log(`✅ Found ${activeProjects.length} active projects\n`);
 
         // Test 3: Get Specific Project
@@ -57,7 +59,8 @@ async function main() {
             console.log('⚠️  Limited tests completed - no projects available in TestRail instance');
             return;
         }
-        const projectId = allProjects[0].id;
+        // const projectId = allProjects[0].id;
+        const projectId = 16;
         const project = await testrail.getProject(projectId);
         console.log(`✅ Project: ${project.name} (ID: ${project.id})`);
         console.log(`   URL: ${project.url}`);
@@ -70,7 +73,8 @@ async function main() {
 
         // Test 4: Get All Suites
         console.log('4️⃣  getTestRailSuites - Get all suites for project');
-        const suites = await testrail.getSuites(projectId);
+        const suitesResp = await testrail.getSuites(projectId);
+        const suites = suitesResp.suites || [];
         console.log(`✅ Found ${suites.length} suites in project ${projectId}`);
         if (suites.length > 0) {
             suites.slice(0, 3).forEach((s: any) => {
@@ -95,7 +99,8 @@ async function main() {
 
         // Test 6: Get All Sections
         console.log('6️⃣  getTestRailSections - Get all sections');
-        const sections = await testrail.getSections(projectId, testSuiteId);
+        const sectionsResp = await testrail.getSections(projectId, testSuiteId);
+        const sections = sectionsResp.sections || [];
         console.log(`✅ Found ${sections.length} sections`);
         if (sections.length > 0) {
             sections.slice(0, 5).forEach((s: any) => {
@@ -122,10 +127,11 @@ async function main() {
 
         // Test 8: Get All Cases
         console.log('8️⃣  getTestRailCases - Get all test cases');
-        const cases = await testrail.getCases(projectId, {
+        const casesResp = await testrail.getCases(projectId, {
             suite_id: testSuiteId,
             limit: 10
         });
+        const cases = casesResp.cases || [];
         console.log(`✅ Found ${cases.length} test cases (limited to 10)`);
         if (cases.length > 0) {
             cases.slice(0, 5).forEach((c: any) => {
@@ -138,11 +144,12 @@ async function main() {
         // Test 9: Get Cases by Section
         if (testSectionId) {
             console.log('9️⃣  getTestRailCases - Get cases in specific section');
-            const sectionCases = await testrail.getCases(projectId, {
+            const sectionCasesResp = await testrail.getCases(projectId, {
                 suite_id: testSuiteId,
                 section_id: testSectionId,
                 limit: 5
             });
+            const sectionCases = sectionCasesResp.cases || [];
             console.log(`✅ Found ${sectionCases.length} cases in section ${testSectionId}\n`);
         }
 
@@ -171,7 +178,8 @@ async function main() {
         // Test 11: Get All Groups
         console.log('1️⃣1️⃣  getTestRailGroups - Get all user groups');
         try {
-            const groups = await testrail.getGroups();
+            const groupsResp = await testrail.getGroups();
+            const groups = groupsResp.groups || [];
             console.log(`✅ Found ${groups.length} user groups`);
             if (groups.length > 0) {
                 groups.slice(0, 5).forEach((g: any) => {

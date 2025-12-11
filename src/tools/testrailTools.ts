@@ -46,7 +46,8 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
 
             const { isCompleted } = options.input;
             try {
-                const projects = await helper.getProjects(isCompleted);
+                const projectsResp = await helper.getProjects(isCompleted);
+                const projects = projectsResp.projects || [];
                 const summary = formatProjectsSummary(projects);
                 return createSuccessResult({ projects, count: projects.length, summary });
             } catch (error) {
@@ -153,7 +154,8 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
 
             const { projectId } = options.input;
             try {
-                const suites = await helper.getSuites(projectId);
+                const suitesResp = await helper.getSuites(projectId);
+                const suites = suitesResp.suites || [];
                 const summary = formatSuitesSummary(suites);
                 return createSuccessResult({ suites, count: suites.length, summary });
             } catch (error) {
@@ -256,7 +258,8 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
 
             const { projectId, suiteId } = options.input;
             try {
-                const sections = await helper.getSections(projectId, suiteId);
+                const sectionsResp = await helper.getSections(projectId, suiteId);
+                const sections = sectionsResp.sections || [];
                 const summary = formatSectionsSummary(sections);
                 return createSuccessResult({ sections, count: sections.length, summary });
             } catch (error) {
@@ -366,12 +369,13 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
 
             const { projectId, suiteId, sectionId, limit, offset } = options.input;
             try {
-                const cases = await helper.getCases(projectId, {
+                const casesResp = await helper.getCases(projectId, {
                     suite_id: suiteId,
                     section_id: sectionId,
                     limit,
                     offset
                 });
+                const cases = casesResp.cases || [];
                 const summary = formatCasesSummary(cases);
                 return createSuccessResult({ cases, count: cases.length, summary });
             } catch (error) {
@@ -486,7 +490,8 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
             }
 
             try {
-                const groups = await helper.getGroups();
+                const groupsResp = await helper.getGroups();
+                const groups = groupsResp.groups || [];
                 const summary = formatGroupsSummary(groups);
                 return createSuccessResult({ groups, count: groups.length, summary });
             } catch (error) {

@@ -90,6 +90,29 @@ Once configured, use the tools in GitHub Copilot Chat by referencing them with `
 @workspace #getTestRailUser userId: 10 get details for user 10
 ```
 
+### Pagination Support
+
+The following tools support pagination with `limit` and `offset` parameters:
+- `getTestRailProjects` - Paginate through projects
+- `getTestRailSuites` - Paginate through suites
+- `getTestRailSections` - Paginate through sections
+- `getTestRailCases` - Paginate through test cases
+- `getTestRailGroups` - Paginate through user groups
+
+Example with pagination:
+```
+@workspace #getTestRailCases projectId: 1, limit: 50, offset: 0 get first 50 cases
+
+@workspace #getTestRailSections projectId: 1, suiteId: 2, limit: 100, offset: 100 get next 100 sections
+```
+
+All paginated responses include:
+- `offset` - Starting position in the result set
+- `limit` - Maximum number of items returned
+- `size` - Total number of items in the result set
+- `_links.next` - URL for the next page (if available)
+- `_links.prev` - URL for the previous page (if available)
+
 ## Available Tools
 
 - `getTestRailProject` - Get details for a specific project

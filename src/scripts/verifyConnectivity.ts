@@ -23,7 +23,8 @@ async function verifyTestRail(config: TestRailConfig): Promise<void> {
 
         try {
             // Try to get projects as a connectivity test
-            const projects = await testrail.getProjects();
+            const projectsResp = await testrail.getProjects();
+            const projects = projectsResp.projects || [];
             console.log(`✅ Connected to TestRail: ${config.baseUrl}`);
             console.log(`👤 Logged in as: ${config.email}`);
             console.log(`📁 Found ${projects.length} accessible projects`);
