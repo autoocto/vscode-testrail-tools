@@ -1,176 +1,245 @@
 # TestRail Tools for VS Code
 
-Interact with TestRail test cases, suites, projects, and more directly from GitHub Copilot Chat in VS Code.
+**Manage TestRail test cases, suites, and projects directly in VS Code** with powerful YAML editing, live preview panels, and seamless Copilot Chat integration.
 
-## Features
+## ✨ Features
 
-This extension provides language model tools to interact with TestRail:
+### 🎯 Interactive Test Case Management
+- **YAML-Based Editing**: Edit test cases, sections, suites, and projects in familiar YAML format
+- **Live Preview Panel**: See formatted, editable preview alongside your YAML (like Markdown preview)
+- **Two-Way Sync**: Edit in preview or YAML - changes sync instantly
+- **Copilot Integration**: Let GitHub Copilot help you write and maintain test cases
 
-### Projects
-- Get project details
-- List all projects
-- Create new projects
-- Update existing projects
-- Delete projects
+### 📊 Visual Test Explorer
+- Browse all projects, suites, sections, and test cases in a tree view
+- Click any item to open it in the YAML editor with live preview
+- Create, edit, and delete entities directly from the explorer
 
-### Suites
-- Get suite details
-- List suites for a project
-- Create new suites
-- Update existing suites
-- Delete suites
+### ⌨️ Keyboard Shortcuts
+- **Ctrl+K V** (Cmd+K V on Mac): Toggle preview panel
+- **Ctrl+S** (Cmd+S on Mac): Save changes to TestRail
+- All standard VS Code shortcuts work in the editor
 
-### Sections
-- Get section details
-- List sections for a project/suite
-- Create new sections (with support for nested sections)
-- Update existing sections
-- Delete sections
+### 🔧 Smart Editing Features
+- **Step Management**: Add/delete test steps with inline buttons
+- **HTML Stripping**: Automatically cleans HTML tags from descriptions
+- **Auto-Complete**: YAML schema provides field suggestions
+- **Validation**: See errors immediately as you type
+- **Custom Field Defaults**: Configure default values for custom fields
 
-### Test Cases
-- Get test case details
-- List test cases with filtering
-- Create new test cases with custom fields
-- Update existing test cases
-- Delete test cases
+## 📦 Installation
 
-### User Groups
-- Get group details
-- List all groups
-- Create new groups
-- Update existing groups
-- Delete groups
+1. Install from VS Code Marketplace or download the VSIX
+2. Reload VS Code
+3. Configure your TestRail credentials (see Configuration below)
 
-### Users
-- Get user by ID
-- Get user by email
-- List all users (optionally filtered by project)
+## ⚙️ Configuration
 
-### Priorities
-- List all available priorities
-
-## Setup
-
-### Configuration
-
-Configure the extension via VS Code settings or environment variables:
-
-#### VS Code Settings
-1. Open VS Code Settings (Ctrl+, or Cmd+,)
+### Option 1: VS Code Settings (Recommended)
+1. Open Settings (Ctrl+, or Cmd+,)
 2. Search for "TestRail Tools"
-3. Set the following:
-   - **TestRail Base URL**: Your TestRail instance URL (e.g., `https://yourcompany.testrail.io`)
-   - **TestRail Email**: Your TestRail email address
-   - **TestRail API Key**: Your TestRail API key
+3. Configure:
+   - **TestRail Base URL**: `https://yourcompany.testrail.io`
+   - **TestRail Email**: Your email address
+   - **TestRail API Key**: Your API key (see below)
+   - **Custom Field Defaults**: Default values for custom fields
 
-#### Environment Variables
-Alternatively, set these environment variables:
-- `TESTRAIL_BASE_URL`: Your TestRail instance URL
-- `TESTRAIL_EMAIL`: Your TestRail email address
-- `TESTRAIL_API_KEY`: Your TestRail API key
+### Option 2: Environment Variables
+Set these variables in your shell or `.env` file:
+```bash
+TESTRAIL_BASE_URL=https://yourcompany.testrail.io
+TESTRAIL_EMAIL=your.email@company.com
+TESTRAIL_API_KEY=your-api-key-here
+```
 
-### Getting Your TestRail API Key
-1. Log in to your TestRail instance
-2. Click on your avatar in the top-right corner
-3. Select "My Settings"
-4. In the "API Keys" section, generate a new API key
-5. Copy the key and use it in the configuration
+### Getting Your API Key
+1. Log in to TestRail
+2. Click your avatar → "My Settings"
+3. Navigate to "API Keys" section
+4. Generate a new API key
+5. Copy and save it securely
 
-## Usage
+### Custom Field Defaults
+Configure default values for custom fields when creating test cases:
+```json
+{
+  "testrailTools.customFieldDefaults": {
+    "custom_automatable": 1,
+    "custom_priority": 2
+  }
+}
+```
 
-Once configured, use the tools in GitHub Copilot Chat by referencing them with `#`:
+## 🚀 Usage
+
+### Visual Editor Workflow
+
+1. **Open TestRail Explorer** (sidebar icon)
+2. **Browse** to find a test case, section, or suite
+3. **Click** to open in YAML editor with live preview
+4. **Edit** in either the YAML or preview panel
+5. **Save** with Ctrl+S or click "💾 Save to TestRail"
+
+### Creating New Entities
+
+#### From Explorer Tree:
+- Click ➕ next to any project/suite/section
+- Fill in the YAML template
+- Save to create in TestRail
+
+#### From Command Palette:
+```
+TestRail: New Test Case
+TestRail: New Section
+TestRail: New Suite
+```
+
+### Editing Test Steps
+
+In the preview panel:
+- Click **➕ Add Step** to add new steps
+- Fill in Step Content and Expected Result
+- Click **🗑️ Delete** on any step to remove it
+- All changes sync to YAML automatically
+
+### Preview Panel Features
+
+- **💾 Save to TestRail**: Upload changes
+- **🔄 Refresh from TestRail**: Pull latest version
+- **🌐 Open in Browser**: View in TestRail web UI
+- **🗑️ Delete**: Remove entity (with confirmation)
+
+## 🤖 Copilot Chat Integration
+
+Use TestRail tools in Copilot Chat with `#` reference:
+
+### Examples:
 
 ```
 @workspace #getTestRailProjects list all active projects
 
-@workspace #getTestRailCases projectId: 1 get all test cases for project 1
+@workspace #getTestRailCases projectId: 1 get all test cases
 
-@workspace #addTestRailCase create a new test case in section 5 titled "Test login functionality"
+@workspace #addTestRailCase sectionId: 42, title: "Test login"
 
-@workspace #getTestRailUser userId: 10 get details for user 10
+@workspace #updateTestRailCase caseId: 123 update test case
+
+@workspace #getTestRailUser userId: 10
 ```
+
+### Available Tools
+
+**Projects**: get, list, add, update, delete  
+**Suites**: get, list, add, update, delete  
+**Sections**: get, list, add, update, delete  
+**Test Cases**: get, list, add, update, delete  
+**Users**: get by ID, get by email, list  
+**Groups**: get, list, add, update, delete  
+**Priorities**: list  
 
 ### Pagination Support
 
-The following tools support pagination with `limit` and `offset` parameters:
-- `getTestRailProjects` - Paginate through projects
-- `getTestRailSuites` - Paginate through suites
-- `getTestRailSections` - Paginate through sections
-- `getTestRailCases` - Paginate through test cases
-- `getTestRailGroups` - Paginate through user groups
-
-Example with pagination:
+Tools support pagination with `limit` and `offset`:
 ```
-@workspace #getTestRailCases projectId: 1, limit: 50, offset: 0 get first 50 cases
-
-@workspace #getTestRailSections projectId: 1, suiteId: 2, limit: 100, offset: 100 get next 100 sections
+#getTestRailCases projectId: 1, limit: 50, offset: 0
+#getTestRailSections projectId: 1, limit: 100, offset: 100
 ```
 
-All paginated responses include:
-- `offset` - Starting position in the result set
-- `limit` - Maximum number of items returned
-- `size` - Total number of items in the result set
-- `_links.next` - URL for the next page (if available)
-- `_links.prev` - URL for the previous page (if available)
+Responses include:
+- `offset`: Starting position
+- `limit`: Max items returned
+- `size`: Total items available
+- `_links.next/prev`: Pagination URLs
 
-## Available Tools
+## 📁 YAML File Format
 
-- `getTestRailProject` - Get details for a specific project
-- `getTestRailProjects` - List all projects
-- `addTestRailProject` - Create a new project
-- `updateTestRailProject` - Update a project
-- `deleteTestRailProject` - Delete a project
-- `getTestRailSuite` - Get details for a specific suite
-- `getTestRailSuites` - List suites for a project
-- `addTestRailSuite` - Create a new suite
-- `updateTestRailSuite` - Update a suite
-- `deleteTestRailSuite` - Delete a suite
-- `getTestRailSection` - Get details for a specific section
-- `getTestRailSections` - List sections for a project/suite
-- `addTestRailSection` - Create a new section
-- `updateTestRailSection` - Update a section
-- `deleteTestRailSection` - Delete a section
-- `getTestRailCase` - Get details for a specific test case
-- `getTestRailCases` - List test cases with filtering
-- `addTestRailCase` - Create a new test case
-- `updateTestRailCase` - Update a test case
-- `deleteTestRailCase` - Delete a test case
-- `getTestRailGroup` - Get details for a specific group
-- `getTestRailGroups` - List all groups
-- `addTestRailGroup` - Create a new group
-- `updateTestRailGroup` - Update a group
-- `deleteTestRailGroup` - Delete a group
-- `getTestRailUser` - Get user by ID
-- `getTestRailUserByEmail` - Get user by email
-- `getTestRailUsers` - List all users
-- `getTestRailPriorities` - List all priorities
+Files are stored in `.testrail/` directory with format: `{type}-{id}.testrail.yaml`
 
-## Requirements
+### Test Case Example:
+```yaml
+entityType: case
+id: 123
+title: Test user login
+section_id: 42
+refs: JIRA-456
+custom_steps:
+  - content: Navigate to login page
+    expected: Login page displays
+  - content: Enter valid credentials
+    expected: User is logged in
+```
 
-- VS Code 1.95.0 or higher
-- A TestRail instance with API access enabled
-- Valid TestRail credentials (email and API key)
+### Section Example:
+```yaml
+entityType: section
+id: 42
+name: Authentication Tests
+description: Tests for login and auth
+suite_id: 5
+parent_id: null  # null for top-level, or parent section ID
+```
 
-## API Reference
+## 🔍 Keyboard Shortcuts
 
-This extension implements the TestRail API v2:
+| Command | Windows/Linux | Mac | Description |
+|---------|---------------|-----|-------------|
+| Toggle Preview | `Ctrl+K V` | `Cmd+K V` | Show/hide preview panel |
+| Save to TestRail | `Ctrl+S` | `Cmd+S` | Save changes (in preview) |
+| Save File | `Ctrl+S` | `Cmd+S` | Save YAML (in editor) |
+| Command Palette | `Ctrl+Shift+P` | `Cmd+Shift+P` | Access all commands |
+
+## 🛠️ Requirements
+
+- **VS Code**: 1.95.0 or higher
+- **TestRail**: Instance with API v2 enabled
+- **Credentials**: Valid email and API key
+
+## 📚 API Reference
+
+This extension uses TestRail API v2:
 - [Projects API](https://support.testrail.com/hc/en-us/articles/7077792415124-Projects)
 - [Suites API](https://support.testrail.com/hc/en-us/articles/7077936624276-Suites)
 - [Sections API](https://support.testrail.com/hc/en-us/articles/7077918603412-Sections)
 - [Cases API](https://support.testrail.com/hc/en-us/articles/7077292642580-Cases)
-- [Groups API](https://support.testrail.com/hc/en-us/articles/7077338821012-Groups)
 - [Users API](https://support.testrail.com/hc/en-us/articles/7077978310292-Users)
-- [Priorities API](https://support.testrail.com/hc/en-us/articles/7077746564244-Priorities)
+- [Groups API](https://support.testrail.com/hc/en-us/articles/7077338821012-Groups)
 
-## License
+## 🐛 Troubleshooting
+
+### Extension Not Activating
+- Check VS Code version (must be 1.95.0+)
+- Verify `js-yaml` is in `node_modules/` (run `npm install`)
+- Check Output panel → TestRail Tools for errors
+
+### Cannot Connect to TestRail
+- Verify base URL (no trailing slash)
+- Confirm API key is valid
+- Check network/firewall settings
+- Enable API access in TestRail admin
+
+### Preview Not Showing
+- Press `Ctrl+K V` to toggle
+- Check that file ends with `.testrail.yaml`
+- Try closing and reopening the file
+
+## 📄 License
 
 MIT License - see LICENSE file for details
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
+Contributions welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run `npm run verify` to test
+5. Submit a pull request
 
-## Support
+## 💬 Support
 
-For issues or questions:
-- File an issue on [GitHub](https://github.com/autoocto/vscode-testrail-tools)
+- **Issues**: [GitHub Issues](https://github.com/autoocto/vscode-testrail-tools/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/autoocto/vscode-testrail-tools/discussions)
+
+---
+
+**Made with ❤️ for QA teams everywhere**

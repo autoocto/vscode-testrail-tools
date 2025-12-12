@@ -2,6 +2,7 @@
 import * as vscode from 'vscode';
 import { TestRailHelper } from '../helpers/testrailHelper';
 import { handleToolError, createSuccessResult } from '../utils/errorHandler';
+import { EditorStateManager } from '../ui/EditorStateManager';
 import {
     formatProject,
     formatSuite,
@@ -19,6 +20,47 @@ import {
 } from '../utils/formatters';
 
 export function registerTestRailTools(context: vscode.ExtensionContext, helper: TestRailHelper | null): void {
+    // ===== ACTIVE EDITOR TOOL =====
+    
+    const getActiveEditorTool = vscode.lm.registerTool('getActiveTestRailEditor', {
+        async invoke(options: vscode.LanguageModelToolInvocationOptions<Record<string, never>>, _token: vscode.CancellationToken) {
+            const stateManager = EditorStateManager.getInstance();
+            const activeEditor = stateManager.getActiveEditor();
+            
+            if (!activeEditor) {
+                return createSuccessResult({ 
+                    message: 'No TestRail editor is currently active',
+                    hasEditor: false
+                });
+            }
+
+            let formatted = '';
+            switch (activeEditor.type) {
+                case 'case':
+                    formatted = formatCase(activeEditor.data as any);
+                    break;
+                case 'suite':
+                    formatted = formatSuite(activeEditor.data as any);
+                    break;
+                case 'section':
+                    formatted = formatSection(activeEditor.data as any);
+                    break;
+                case 'project':
+                    formatted = formatProject(activeEditor.data as any);
+                    break;
+            }
+
+            return createSuccessResult({
+                hasEditor: true,
+                type: activeEditor.type,
+                id: activeEditor.id,
+                title: activeEditor.panelTitle,
+                data: activeEditor.data,
+                formatted
+            });
+        }
+    });
+
     // ===== PROJECT TOOLS =====
 
     const getProjectTool = vscode.lm.registerTool('getTestRailProject', {
@@ -625,6 +667,7 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
 
     // Register all tools
     context.subscriptions.push(
+        getActiveEditorTool,
         getProjectTool,
         getProjectsTool,
         addProjectTool,

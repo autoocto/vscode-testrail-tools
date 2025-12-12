@@ -1,8 +1,8 @@
 {
   "name": "testrail-tools",
   "displayName": "TestRail Tools",
-  "description": "Interact with TestRail test cases, suites, and projects in Copilot chat",
-  "version": "0.1.2",
+  "description": "Manage TestRail test cases with YAML editing, live preview, and Copilot Chat integration",
+  "version": "0.2.0",
   "publisher": "autoocto",
   "repository": "https://github.com/autoocto/vscode-testrail-tools",
   "engines": {
@@ -13,6 +13,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguageModelTool:getActiveTestRailEditor",
     "onLanguageModelTool:getTestRailProject",
     "onLanguageModelTool:getTestRailProjects",
     "onLanguageModelTool:addTestRailProject",
@@ -45,6 +46,159 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "testrail",
+          "title": "TestRail",
+          "icon": "$(beaker)"
+        }
+      ]
+    },
+    "views": {
+      "testrail": [
+        {
+          "id": "testrailExplorer",
+          "name": "Test Cases",
+          "icon": "$(beaker)",
+          "contextualTitle": "TestRail Explorer"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "testrail.refreshTree",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "testrail.openProject",
+        "title": "Open Project",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "testrail.openSuite",
+        "title": "Open Suite",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "testrail.openSection",
+        "title": "Open Section",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "testrail.openCase",
+        "title": "Open Test Case",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "testrail.createCase",
+        "title": "New Test Case",
+        "icon": "$(add)"
+      },
+      {
+        "command": "testrail.deleteCase",
+        "title": "Delete Test Case",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "testrail.createSuite",
+        "title": "New Suite",
+        "icon": "$(add)"
+      },
+      {
+        "command": "testrail.createSection",
+        "title": "New Section",
+        "icon": "$(add)"
+      },
+      {
+        "command": "testrail.showPreview",
+        "title": "TestRail: Show Preview",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "testrail.togglePreview",
+        "title": "TestRail: Toggle Preview",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "testrail.saveToTestRail",
+        "title": "TestRail: Save to TestRail",
+        "icon": "$(save)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "testrail.refreshTree",
+          "when": "view == testrailExplorer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "testrail.openProject",
+          "when": "view == testrailExplorer && viewItem == project"
+        },
+        {
+          "command": "testrail.createSuite",
+          "when": "view == testrailExplorer && viewItem == project",
+          "group": "inline"
+        },
+        {
+          "command": "testrail.openSuite",
+          "when": "view == testrailExplorer && viewItem == suite"
+        },
+        {
+          "command": "testrail.createSection",
+          "when": "view == testrailExplorer && viewItem == suite",
+          "group": "inline"
+        },
+        {
+          "command": "testrail.openSection",
+          "when": "view == testrailExplorer && viewItem == section"
+        },
+        {
+          "command": "testrail.createSection",
+          "when": "view == testrailExplorer && viewItem == section",
+          "group": "inline"
+        },
+        {
+          "command": "testrail.createCase",
+          "when": "view == testrailExplorer && viewItem == section",
+          "group": "inline"
+        },
+        {
+          "command": "testrail.openCase",
+          "when": "view == testrailExplorer && viewItem == case"
+        },
+        {
+          "command": "testrail.deleteCase",
+          "when": "view == testrailExplorer && viewItem == case"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "testrail.togglePreview",
+          "when": "resourceFilename =~ /\\.testrail\\.yaml$/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "testrail.togglePreview",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "resourceFilename =~ /\\.testrail\\.yaml$/"
+      },
+      {
+        "command": "testrail.saveToTestRail",
+        "key": "ctrl+s",
+        "mac": "cmd+s",
+        "when": "activeWebviewPanelId == 'testrailPreview'"
+      }
+    ],
     "configuration": {
       "title": "TestRail Tools",
       "properties": {
@@ -65,10 +219,36 @@
           "description": "TestRail API key",
           "default": "",
           "order": 3
+        },
+        "testrailTools.customFieldDefaults": {
+          "type": "object",
+          "description": "Default values for custom fields when creating new test cases",
+          "default": {
+            "custom_automatable": 1
+          },
+          "order": 4
         }
       }
     },
     "languageModelTools": [
+      {
+        "name": "getActiveTestRailEditor",
+        "displayName": "Get Active TestRail Editor",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "getActiveTestRailEditor",
+        "modelDescription": "Get details about the currently active TestRail editor (project, suite, section, or test case). Use this to understand what the user is currently working on.",
+        "icon": "$(eye)",
+        "tags": [
+          "testrail",
+          "editor",
+          "active",
+          "current"
+        ],
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
       {
         "name": "getTestRailProject",
         "displayName": "Get TestRail Project",
@@ -946,6 +1126,7 @@
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.x",
     "@types/vscode": "^1.95.0",
     "@typescript-eslint/eslint-plugin": "^7.x",
@@ -955,5 +1136,8 @@
     "eslint": "^8.x",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.1"
   }
 }
