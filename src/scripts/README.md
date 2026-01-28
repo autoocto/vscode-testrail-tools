@@ -40,11 +40,28 @@ This will:
 
 ### Test All Tools
 
-Run comprehensive tests for all TestRail language model tools:
+Run comprehensive tests for all TestRail language model tools (read-only mode):
 
 ```bash
 npm test
 ```
+
+This will:
+- Test all GET operations (projects, suites, sections, cases, users, groups, priorities)
+- Validate that all write operations are properly registered
+- Display a summary of all 31 language model tools
+
+The test runs in read-only mode by default to avoid modifying TestRail data.
+
+### Test Write Operations
+
+To test create/update/delete operations (creates temporary data and cleans up):
+
+```bash
+npm run test-write
+```
+
+**Warning:** This will create and delete test data in your TestRail instance.
 
 ### Test Pagination
 
@@ -80,7 +97,35 @@ This will test all non-destructive read operations:
 ## Scripts
 
 - `verifyConnectivity.ts` - Tests connection to TestRail
-- `testTestrailTools.ts` - Comprehensive test of all read-only tools
+- `testPagination.ts` - Tests pagination support for all applicable APIs
+- `tests/` - Main test suite folder:
+  - `index.ts` - Test runner (main entry point)
+  - `testUtils.ts` - Shared test utilities and context management
+  - `readTests.ts` - All GET operation tests
+  - `writeTests.ts` - All CREATE/UPDATE/DELETE tests
+
+## Test Coverage
+
+All 31 TestRail Language Model Tools are covered by tests:
+
+### Read Operations (Tested in `npm test`):
+- **Projects**: getTestRailProjects, getTestRailProject
+- **Suites**: getTestRailSuites, getTestRailSuite  
+- **Sections**: getTestRailSections, getTestRailSection
+- **Cases**: getTestRailCases, getTestRailCase
+- **Users**: getTestRailUsers, getTestRailUser, getTestRailUserByEmail
+- **Groups**: getTestRailGroups, getTestRailGroup
+- **Priorities**: getTestRailPriorities
+- **Active Editor**: getActiveTestRailEditor
+
+### Write Operations (Validated by structure):
+- **Projects**: addTestRailProject, updateTestRailProject, deleteTestRailProject
+- **Suites**: addTestRailSuite, updateTestRailSuite, deleteTestRailSuite
+- **Sections**: addTestRailSection, updateTestRailSection, deleteTestRailSection
+- **Cases**: addTestRailCase, updateTestRailCase, deleteTestRailCase
+- **Groups**: addTestRailGroup, updateTestRailGroup, deleteTestRailGroup
+
+All write operations can be tested with `npm run test-write`.
 
 ## Troubleshooting
 

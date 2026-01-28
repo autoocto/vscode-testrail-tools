@@ -6,3 +6,6 @@ out/
 package-lock.json
 private_test/
 .testrail/
+.test-state.json
+tests/*.js
+tests/*.js.map

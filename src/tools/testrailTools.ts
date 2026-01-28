@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as vscode from 'vscode';
 import { TestRailHelper } from '../helpers/testrailHelper';
 import { handleToolError, createSuccessResult } from '../utils/errorHandler';
@@ -23,7 +22,7 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
     // ===== ACTIVE EDITOR TOOL =====
     
     const getActiveEditorTool = vscode.lm.registerTool('getActiveTestRailEditor', {
-        async invoke(options: vscode.LanguageModelToolInvocationOptions<Record<string, never>>, _token: vscode.CancellationToken) {
+        async invoke(_options: vscode.LanguageModelToolInvocationOptions<Record<string, never>>, _token: vscode.CancellationToken) {
             const stateManager = EditorStateManager.getInstance();
             const activeEditor = stateManager.getActiveEditor();
             
@@ -650,7 +649,7 @@ export function registerTestRailTools(context: vscode.ExtensionContext, helper: 
     // ===== PRIORITY TOOLS =====
 
     const getPrioritiesTool = vscode.lm.registerTool('getTestRailPriorities', {
-        async invoke(options: vscode.LanguageModelToolInvocationOptions<Record<string, never>>, _token: vscode.CancellationToken) {
+        async invoke(_options: vscode.LanguageModelToolInvocationOptions<Record<string, never>>, _token: vscode.CancellationToken) {
             if (!helper) {
                 return handleToolError(new Error('TestRail is not configured'));
             }

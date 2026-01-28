@@ -222,6 +222,49 @@ This extension uses TestRail API v2:
 - Check that file ends with `.testrail.yaml`
 - Try closing and reopening the file
 
+## 🧪 Testing & Development
+
+### Running Tests
+
+```bash
+# Verify connectivity to TestRail
+npm run verify
+
+# Run comprehensive integration tests (read-only)
+npm test
+
+# Test pagination support
+npm run test-pagination
+
+# Test write operations (creates/deletes test data)
+npm run test-write
+```
+
+### Test Coverage
+
+All 31 Language Model Tools are covered by integration tests:
+- ✅ 17 Read operations (tested by default)
+- ✅ 13 Write operations (validated, tested with `--write` flag)  
+- ✅ 1 Context tool (getActiveTestRailEditor)
+
+See [src/scripts/README.md](src/scripts/README.md) for detailed test documentation.
+
+### Development Commands
+
+```bash
+# Compile TypeScript
+npm run compile
+
+# Watch mode for development
+npm run watch
+
+# Run linter
+npm run lint
+
+# Package extension
+npm run pack
+```
+
 ## 📄 License
 
 MIT License - see LICENSE file for details

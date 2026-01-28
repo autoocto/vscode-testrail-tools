@@ -43,7 +43,7 @@ async function main() {
             return;
         }
 
-        const projectId = 18; // Or use projects[0].id
+        const projectId = projects[0].id;
         const project = await testrail.getProject(projectId);
         console.log(`Using project: ${project.name} (ID: ${project.id})\n`);
 

@@ -348,7 +348,8 @@ export class TestRailHelper {
     async updateGroup(groupId: number, data: {
         name: string;
     }): Promise<any> {
-        return this.request(`/index.php?/api/v2/update_group/${groupId}`, 'POST', data);
+        // TestRail API requires group_id in both URL and request body
+        return this.request(`/index.php?/api/v2/update_group/${groupId}`, 'POST', { ...data, group_id: groupId });
     }
 
     /**
